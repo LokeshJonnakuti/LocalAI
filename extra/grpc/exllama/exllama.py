@@ -16,6 +16,7 @@ from torch import version as torch_version
 from exllama.generator import ExLlamaGenerator
 from exllama.model import ExLlama, ExLlamaCache, ExLlamaConfig
 from exllama.tokenizer import ExLlamaTokenizer
+import math
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -80,7 +81,7 @@ class BackendServicer(backend_pb2_grpc.BackendServicer):
 
     def Predict(self, request, context):
         penalty = 1.15
-        if request.Penalty != 0.0:
+        if not math.isclose(request.Penalty, 0.0, rel_tol=1e-09, abs_tol=0.0):
             penalty = request.Penalty
         self.generator.settings.token_repetition_penalty_max = penalty
         self.generator.settings.temperature = request.Temperature

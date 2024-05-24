@@ -12,6 +12,7 @@ from auto_gptq import AutoGPTQForCausalLM, BaseQuantizeConfig
 from pathlib import Path
 from transformers import AutoTokenizer
 from transformers import TextGenerationPipeline
+import math
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
@@ -46,13 +47,13 @@ class BackendServicer(backend_pb2_grpc.BackendServicer):
 
     def Predict(self, request, context):
         penalty = 1.0
-        if request.Penalty != 0.0:
+        if not math.isclose(request.Penalty, 0.0, rel_tol=1e-09, abs_tol=0.0):
             penalty = request.Penalty
         tokens = 512
         if request.Tokens != 0:
             tokens = request.Tokens
         top_p = 0.95
-        if request.TopP != 0.0:
+        if not math.isclose(request.TopP, 0.0, rel_tol=1e-09, abs_tol=0.0):
             top_p = request.TopP
 
         # Implement Predict RPC
