@@ -12,7 +12,7 @@ def ask(prompt):
     }
     myheaders = { "Content-Type" : "application/json" }  
 
-    x = requests.post(url, json = myobj, headers=myheaders)
+    x = requests.post(url, json = myobj, headers=myheaders, timeout=60)
     
     print(x.text)
     
